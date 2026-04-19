@@ -7,9 +7,10 @@ app = Flask(__name__)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "db", "contratos_ufpi.db")
-#DB_PATH = "./db/contratos_ufpi.db"
+PDF_FOLDER = os.path.join(BASE_DIR, "static", "portarias")
 
-PDF_FOLDER = os.path.join("static", "portarias")
+#DB_PATH = "./db/contratos_ufpi.db"
+#PDF_FOLDER = os.path.join("static", "portarias")
 
 
 def formatar_data(valor):
