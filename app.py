@@ -56,7 +56,9 @@ def index():
                     # Cruzamos os dados localmente (muito rápido)
                     nome_chave = row["portaria"].replace("/", "-").lower()
                     row["link_pdf"] = mapa_pdfs.get(nome_chave)
-                    row["pdf_disponivel"] = True if row["link_pdf"] else False
+                    row["pdf_disponivel"] = True if row["link_drive"] else False
+                    print(row['pdf_disponivel'])
+                    print(row['link_drive'])
 
     return render_template("index.html", resultados=resultados, siape=siape_buscado)
 
