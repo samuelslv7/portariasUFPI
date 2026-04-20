@@ -28,9 +28,6 @@ def download_file(filename):
     # Converte %20 de volta para espaços reais
     nome_limpo = unquote(filename)
     
-    # Adicionamos um print para você ver no log da Vercel o que ele está tentando buscar
-    print(f"Tentando buscar: {os.path.join(PDF_FOLDER, nome_limpo)}")
-    
     return send_from_directory(
         PDF_FOLDER, 
         nome_limpo, 
