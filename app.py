@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, send_from_directory
 import sqlite3
 import pandas as pd
 import os
+from urllib.parse import unquote
 
 app = Flask(__name__)
 
@@ -24,12 +25,16 @@ def formatar_data(valor):
 
 @app.route("/download/<path:filename>")
 def download_file(filename):
-    # O 'path:filename' é importante para aceitar espaços no nome do arquivo
+    # Converte %20 de volta para espaços reais
+    nome_limpo = unquote(filename)
+    
+    # Adicionamos um print para você ver no log da Vercel o que ele está tentando buscar
+    print(f"Tentando buscar: {os.path.join(PDF_FOLDER, nome_limpo)}")
+    
     return send_from_directory(
         PDF_FOLDER, 
-        filename, 
-        as_attachment=False, 
-        mimetype='application/pdf'
+        nome_limpo, 
+        as_attachment=False
     )
 
 
