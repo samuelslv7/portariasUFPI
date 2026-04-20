@@ -22,10 +22,10 @@ def formatar_data(valor):
         return str(valor)
 
 
-@app.route("/download/<filename>")
+@app.route("/download/<path:filename>")
 def download_file(filename):
-    # Envia o arquivo da pasta static/pdfs para o usuário
-    return send_from_directory(PDF_FOLDER, filename)
+    # path:filename ajuda a lidar com espaços e caracteres especiais na URL
+    return send_from_directory(PDF_FOLDER, filename, as_attachment=False)
 
 
 @app.route("/", methods=["GET", "POST"])
