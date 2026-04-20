@@ -88,8 +88,8 @@
                     
                     <td>
                         {% if row.pdf_disponivel %}
-                        <a href="{{ url_for('download_file', filename=row.nome_arquivo) }}" target="_blank">
-                            {{ row.portaria }}
+                        <a href="/static/pdfs/{{ row.nome_arquivo }}" target="_blank">
+                            {{ row.portaria }} 📥
                         </a>
                         {% else %}
                         {{ row.portaria }} <span style="color: #ccc; font-size: 0.8em;">(Indisponível)</span>
