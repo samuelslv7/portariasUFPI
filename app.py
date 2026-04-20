@@ -3,6 +3,7 @@ import sqlite3
 import pandas as pd
 import os
 from urllib.parse import unquote
+import drive_service
 
 app = Flask(__name__)
 
@@ -10,8 +11,8 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "db", "contratos_ufpi.db")
 PDF_FOLDER = os.path.join(BASE_DIR, "static", "portarias")
 
-#DB_PATH = "./db/contratos_ufpi.db"
-#PDF_FOLDER = os.path.join("static", "portarias")
+# DB_PATH = "./db/contratos_ufpi.db"
+# PDF_FOLDER = os.path.join("static", "portarias")
 
 
 def formatar_data(valor):
@@ -27,12 +28,8 @@ def formatar_data(valor):
 def download_file(filename):
     # Converte %20 de volta para espaços reais
     nome_limpo = unquote(filename)
-    
-    return send_from_directory(
-        PDF_FOLDER, 
-        nome_limpo, 
-        as_attachment=False
-    )
+
+    return send_from_directory(PDF_FOLDER, nome_limpo, as_attachment=False)
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -52,35 +49,51 @@ def index():
             if not df.empty:
                 df["data"] = df["data"].apply(formatar_data)
                 resultados = df.to_dict("records")
-                for row in resultados:
-                    # Nome esperado do arquivo (Ex: PORTARIA 120-2017 CT 19-2013.pdf)
-                    nome_arquivo = f"PORTARIA {row['portaria'].replace('/', '-')} CT {row['contrato'].replace('/', '-')}.pdf"
-                    caminho_real = os.path.join(PDF_FOLDER, nome_arquivo)
 
-                    # Adicionamos uma flag para o HTML saber se mostra o link ou não
-                    row["pdf_disponivel"] = os.path.exists(caminho_real)
-                    row["nome_arquivo"] = nome_arquivo
+                for row in resultados:
+                    # O Python vai no Drive ver se o arquivo existe lá
+                    link_drive = drive_service.buscar_pdf_drive(row["portaria"])
+
+                    if link_drive:
+                        row["link_pdf"] = link_drive
+                        row["pdf_disponivel"] = True
+                    else:
+                        row["pdf_disponivel"] = False
+
     return render_template("index.html", resultados=resultados, siape=siape_buscado)
 
 
-@app.route('/debug')
+'''@app.route("/", methods=["GET", "POST"])
+def index():
+    # ... busca no SQLite ...
+    for row in resultados:
+        # Nome esperado do arquivo (Ex: PORTARIA 120-2017 CT 19-2013.pdf)
+        nome_arquivo = f"PORTARIA {row['portaria'].replace('/', '-')} CT {row['contrato'].replace('/', '-')}.pdf"
+        caminho_real = os.path.join(PDF_FOLDER, nome_arquivo)
+
+        # Adicionamos uma flag para o HTML saber se mostra o link ou não
+        row["pdf_disponivel"] = os.path.exists(caminho_real)
+        row["nome_arquivo"] = nome_arquivo'''
+
+
+@app.route("/debug")
 def debug_files():
     import os
+
     # Lista o que tem na pasta static/pdfs
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    pdf_path = os.path.join(base_dir, 'static', 'portarias')
-    
+    pdf_path = os.path.join(base_dir, "static", "portarias")
+
     files = []
     if os.path.exists(pdf_path):
         files = os.listdir(pdf_path)
-    
+
     return {
         "diretorio_atual": base_dir,
         "caminho_buscado": pdf_path,
         "pasta_existe": os.path.exists(pdf_path),
-        "arquivos_na_pasta": files
+        "arquivos_na_pasta": files,
     }
-
 
 
 if __name__ == "__main__":
