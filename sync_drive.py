@@ -1,5 +1,5 @@
 import sqlite3
-from drive_service import *
+from drive_service import obter_servico_drive
 
 def sincronizar_links_drive():
     service = obter_servico_drive() # Sua conexão com Google Drive
@@ -22,13 +22,8 @@ def sincronizar_links_drive():
         # Ex: "PORTARIA 110-2017 CT 05-2015.pdf"
         nome_original = arquivo['name'].upper()
         link = arquivo['webViewLink']
-        
-        # Criamos uma versão "normalizada" do nome do arquivo 
-        # (trocando hifens por barras para bater com o BD)
         nome_normalizado = nome_original.replace('-', '/')
 
-        # O SQL agora checa se a portaria E o contrato estão no nome
-        # Usamos COALESCE no contrato para o caso de ele ser NULL no banco
         cursor.execute("""
             UPDATE contratos 
             SET link_drive = ? 
