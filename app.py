@@ -3,7 +3,7 @@ import sqlite3
 import pandas as pd
 import os
 from urllib.parse import unquote
-import drive_service
+from drive_service import *
 
 app = Flask(__name__)
 
@@ -50,20 +50,32 @@ def index():
                 df["data"] = df["data"].apply(formatar_data)
                 resultados = df.to_dict("records")
 
-                for row in resultados:
+            if resultados:
+                    service = obter_servico_drive()
+                    # Buscamos oW mapa da pasta uma única vez por requisição
+                    mapa_pdfs = mapear_arquivos_drive(service)
+
+                    for row in resultados:
+                        # Cruzamos os dados localmente (muito rápido)
+                        nome_chave = row["portaria"].replace("/", "-").lower()
+                        row["link_pdf"] = mapa_pdfs.get(nome_chave)
+                        row["pdf_disponivel"] = True if row["link_pdf"] else False
+
+            """for row in resultados:
                     # O Python vai no Drive ver se o arquivo existe lá
-                    link_drive = drive_service.buscar_pdf_drive(row["portaria"])
+                    nome_arquivo = f"PORTARIA {row['portaria'].replace('/', '-')} CT {row['contrato'].replace('/', '-')}.pdf"
+                    link_drive = drive_service.buscar_pdf_drive(nome_arquivo)
 
                     if link_drive:
                         row["link_pdf"] = link_drive
                         row["pdf_disponivel"] = True
                     else:
-                        row["pdf_disponivel"] = False
+                        row["pdf_disponivel"] = False"""
 
     return render_template("index.html", resultados=resultados, siape=siape_buscado)
 
 
-'''@app.route("/", methods=["GET", "POST"])
+"""@app.route("/", methods=["GET", "POST"])
 def index():
     # ... busca no SQLite ...
     for row in resultados:
@@ -73,7 +85,7 @@ def index():
 
         # Adicionamos uma flag para o HTML saber se mostra o link ou não
         row["pdf_disponivel"] = os.path.exists(caminho_real)
-        row["nome_arquivo"] = nome_arquivo'''
+        row["nome_arquivo"] = nome_arquivo"""
 
 
 @app.route("/debug")
