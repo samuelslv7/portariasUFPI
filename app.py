@@ -2,7 +2,6 @@ from flask import Flask, render_template, request
 import sqlite3
 import pandas as pd
 import os
-from drive_service import *
 
 app = Flask(__name__)
 
