@@ -24,8 +24,13 @@ def formatar_data(valor):
 
 @app.route("/download/<path:filename>")
 def download_file(filename):
-    # path:filename ajuda a lidar com espaços e caracteres especiais na URL
-    return send_from_directory(PDF_FOLDER, filename, as_attachment=False)
+    # O 'path:filename' é importante para aceitar espaços no nome do arquivo
+    return send_from_directory(
+        PDF_FOLDER, 
+        filename, 
+        as_attachment=False, 
+        mimetype='application/pdf'
+    )
 
 
 @app.route("/", methods=["GET", "POST"])
