@@ -11,9 +11,6 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "db", "contratos_ufpi.db")
 PDF_FOLDER = os.path.join(BASE_DIR, "static", "portarias")
 
-# DB_PATH = "./db/contratos_ufpi.db"
-# PDF_FOLDER = os.path.join("static", "portarias")
-
 
 def formatar_data(valor):
     if pd.isna(valor) or valor == "":
@@ -51,41 +48,17 @@ def index():
                 resultados = df.to_dict("records")
 
             if resultados:
-                    service = obter_servico_drive()
-                    # Buscamos oW mapa da pasta uma única vez por requisição
-                    mapa_pdfs = mapear_arquivos_drive(service)
+                service = obter_servico_drive()
+                # Buscamos oW mapa da pasta uma única vez por requisição
+                mapa_pdfs = mapear_arquivos_drive(service)
 
-                    for row in resultados:
-                        # Cruzamos os dados localmente (muito rápido)
-                        nome_chave = row["portaria"].replace("/", "-").lower()
-                        row["link_pdf"] = mapa_pdfs.get(nome_chave)
-                        row["pdf_disponivel"] = True if row["link_pdf"] else False
-
-            """for row in resultados:
-                    # O Python vai no Drive ver se o arquivo existe lá
-                    nome_arquivo = f"PORTARIA {row['portaria'].replace('/', '-')} CT {row['contrato'].replace('/', '-')}.pdf"
-                    link_drive = drive_service.buscar_pdf_drive(nome_arquivo)
-
-                    if link_drive:
-                        row["link_pdf"] = link_drive
-                        row["pdf_disponivel"] = True
-                    else:
-                        row["pdf_disponivel"] = False"""
+                for row in resultados:
+                    # Cruzamos os dados localmente (muito rápido)
+                    nome_chave = row["portaria"].replace("/", "-").lower()
+                    row["link_pdf"] = mapa_pdfs.get(nome_chave)
+                    row["pdf_disponivel"] = True if row["link_pdf"] else False
 
     return render_template("index.html", resultados=resultados, siape=siape_buscado)
-
-
-"""@app.route("/", methods=["GET", "POST"])
-def index():
-    # ... busca no SQLite ...
-    for row in resultados:
-        # Nome esperado do arquivo (Ex: PORTARIA 120-2017 CT 19-2013.pdf)
-        nome_arquivo = f"PORTARIA {row['portaria'].replace('/', '-')} CT {row['contrato'].replace('/', '-')}.pdf"
-        caminho_real = os.path.join(PDF_FOLDER, nome_arquivo)
-
-        # Adicionamos uma flag para o HTML saber se mostra o link ou não
-        row["pdf_disponivel"] = os.path.exists(caminho_real)
-        row["nome_arquivo"] = nome_arquivo"""
 
 
 @app.route("/debug")

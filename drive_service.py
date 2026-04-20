@@ -5,31 +5,33 @@ from googleapiclient.discovery import build
 
 id_pasta = "1bMndtRFMbucRqEqjJK3Hl3LRT9N-DAcc"
 
+
 def mapear_arquivos_drive(service):
     # Busca TODOS os arquivos daquela pasta de uma vez (limite de 1000)
     query = f"'{id_pasta}' in parents and trashed = false"
-    results = service.files().list(
-        q=query, 
-        fields="files(id, name, webViewLink)",
-        pageSize=1000
-    ).execute()
-    
+    results = (
+        service.files()
+        .list(q=query, fields="files(id, name, webViewLink)", pageSize=1000)
+        .execute()
+    )
+
     # Cria um dicionário: {'120-2017': 'link...', '110-2017': 'link...'}
     # Removemos a extensão .pdf do nome para facilitar o cruzamento
-    mapa = {f['name'].lower().replace('.pdf', ''): f['webViewLink'] for f in results.get('files', [])}
+    mapa = {
+        f["name"].lower().replace(".pdf", ""): f["webViewLink"]
+        for f in results.get("files", [])
+    }
     return mapa
 
+
 def obter_servico_drive():
-    print("OBTENDO ACESSO AO DRIVE")
     # 1. Tenta ler a variável de ambiente da Vercel
     # 2. Se não existir (local), tenta ler o arquivo credentials.json
     creds_raw = os.environ.get("GOOGLE_CREDENTIALS")
 
     if creds_raw:
         info = json.loads(creds_raw)
-        print("ACHOU CRENDECIAL")
     else:
-        print("CRENDECIAL LOCAL")
         try:
             with open("credentials.json", "r") as f:
                 info = json.load(f)
@@ -44,28 +46,7 @@ def obter_servico_drive():
 
 
 def buscar_pdf_drive(nome_portaria):
-    print("BUSCANDO NO DRIVE")
     service = obter_servico_drive()
-    # nome_busca = nome_portaria.replace('/', '-')
-    print("-" * 30)
-    print(nome_portaria)
-    print("-" * 30)
-
-    # Substitua pelo ID da sua pasta (fica na URL do navegador quando você abre a pasta)
-    #id_pasta = "1bMndtRFMbucRqEqjJK3Hl3LRT9N-DAcc"
-
-    '''try:
-        pasta = service.files().get(
-            fileId=id_pasta, 
-            fields='name',
-            supportsAllDrives=True # Importante para contas institucionais
-        ).execute()
-        print(f"Sucesso! Conectado à pasta: {pasta['name']}")
-    except Exception as e:
-        print(f"Ainda sem acesso: {e}")'''
-
-
-
 
     try:
         pasta = service.files().get(fileId=id_pasta, fields="name").execute()
