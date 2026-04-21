@@ -50,19 +50,6 @@ def index():
 
     return render_template("index.html", resultados=resultados, siape=siape_buscado)
 
-@app.route('/debug-img')
-def debug_img():
-    # Caminho onde as imagens deveriam estar
-    caminho = os.path.join(app.root_path, 'static', 'img')
-    try:
-        if os.path.exists(caminho):
-            arquivos = os.listdir(caminho)
-            return f"Arquivos encontrados em {caminho}: <br> " + "<br>".join(arquivos)
-        else:
-            return f"Erro: A pasta {caminho} NÃO EXISTE no servidor da Vercel."
-    except Exception as e:
-        return f"Erro ao acessar pasta: {str(e)}"
-
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)
