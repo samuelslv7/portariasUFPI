@@ -40,7 +40,7 @@ def index():
                 for row in resultados:
                     print("TESTE")
                     print(row["link_drive"])
-                    print("-")*10
+                    print("----------------------------")
                     row["pdf_disponivel"] = True if row["link_drive"] else False
 
     return render_template("index.html", resultados=resultados, siape=siape_buscado)
