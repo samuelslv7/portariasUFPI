@@ -38,7 +38,8 @@ def index():
 
             if resultados:
                 for row in resultados:
-                    row["pdf_disponivel"] = True if row["link_drive"] else False
+                    row["pdf_disponivel"] = False if not(row["link_drive"]) else True
+                    #row["pdf_disponivel"] = True if row["link_drive"] else False
 
     return render_template("index.html", resultados=resultados, siape=siape_buscado)
 
