@@ -1,0 +1,6 @@
+credentials.json
+__pycache__
+
+                        <a href="{{ url_for('download_file', filename=row.nome_arquivo) }}" target="_blank">
+                            {{ row.portaria }}
+                        </a>

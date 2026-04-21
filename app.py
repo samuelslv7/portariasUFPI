@@ -1,11 +1,12 @@
-from flask import Flask, render_template, request, send_from_directory
+from flask import Flask, render_template, request
 import sqlite3
 import pandas as pd
 import os
 
 app = Flask(__name__)
-DB_PATH = "./db/contratos_ufpi.db"
-PDF_FOLDER = os.path.join("static", "portarias")
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "db", "contratos_ufpi.db")
 
 
 def formatar_data(valor):
@@ -15,12 +16,6 @@ def formatar_data(valor):
         return pd.to_datetime(valor).strftime("%d/%m/%Y")
     except:
         return str(valor)
-
-
-@app.route("/download/<filename>")
-def download_file(filename):
-    # Envia o arquivo da pasta static/pdfs para o usuário
-    return send_from_directory(PDF_FOLDER, filename)
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -33,24 +28,28 @@ def index():
         if siape_buscado:
             conn = sqlite3.connect(DB_PATH)
             # Buscar os dados no banco
-            query = "SELECT * FROM contratos WHERE siape = ? ORDER BY ano_aba"
+            query = "SELECT * FROM contratos WHERE siape = ?"
             df = pd.read_sql_query(query, conn, params=(siape_buscado,))
             conn.close()
 
             if not df.empty:
                 df["data"] = df["data"].apply(formatar_data)
                 resultados = df.to_dict("records")
-                for row in resultados:
-                    # Nome esperado do arquivo (Ex: PORTARIA 120-2017 CT 19-2013.pdf)
-                    nome_arquivo = f"PORTARIA {row['portaria'].replace('/', '-')} CT {row['contrato'].replace('/', '-')}.pdf"
-                    caminho_real = os.path.join(PDF_FOLDER, nome_arquivo)
 
-                    # Adicionamos uma flag para o HTML saber se mostra o link ou não
-                    row["pdf_disponivel"] = os.path.exists(caminho_real)
-                    row["nome_arquivo"] = nome_arquivo
+            if resultados:
+                for row in resultados:
+                    link = row.get('link_drive')
+                    if link and str(link).lower() != 'nan':
+                        row['pdf_disponivel'] = True
+                        row['link_pdf'] = link
+                    else:
+                        row['pdf_disponivel'] = False
+                        row['link_pdf'] = None
+                        
+                    #row["pdf_disponivel"] = True if row["link_drive"] else False
+
     return render_template("index.html", resultados=resultados, siape=siape_buscado)
 
 
 if __name__ == "__main__":
-    # migrar_excel_para_sqlite_ajustado("portarias.xlsx", DB_PATH)
     app.run(debug=True, host="0.0.0.0", port=5000)

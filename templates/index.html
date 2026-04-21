@@ -85,10 +85,10 @@
                 {% for row in resultados %}
                 <tr>
                     <td>{{ row.ano_aba }}</td>
-                    
+
                     <td>
                         {% if row.pdf_disponivel %}
-                        <a href="{{ url_for('download_file', filename=row.nome_arquivo) }}" target="_blank">
+                        <a href="{{ row.link_drive }}" target="_blank">
                             {{ row.portaria }}
                         </a>
                         {% else %}
