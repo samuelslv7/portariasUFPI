@@ -39,12 +39,12 @@ def index():
             if resultados:
                 for row in resultados:
                     link = row.get('link_drive')
-                        if link and str(link).lower() != 'nan':
-                            row['pdf_disponivel'] = True
-                            row['link_pdf'] = link
-                        else:
-                            row['pdf_disponivel'] = False
-                            row['link_pdf'] = None
+                    if link and str(link).lower() != 'nan':
+                        row['pdf_disponivel'] = True
+                        row['link_pdf'] = link
+                    else:
+                        row['pdf_disponivel'] = False
+                        row['link_pdf'] = None
                         
                     #row["pdf_disponivel"] = True if row["link_drive"] else False
 
