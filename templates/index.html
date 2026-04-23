@@ -99,8 +99,13 @@
 
     <header class="header-ufpi">
         <div class="container d-flex align-items-center">
-            <img id="logo-institucional" src="/static/images/logoUfpi.png"
-                alt="Logo institucional da Universidade Federal do Piauí" class="inst-logo">
+            <img id="logo-institucional" src="{{ url_for('static', filename='images/logoUfpi.png') }}" alt="Logo institucional UFPI 1"
+                class="inst-logo">
+            <img id="logo-institucional" src="{{ url_for('static', filename='logoUfpi.png') }}" alt="Logo institucional UFPI 1"
+                class="inst-logo">
+            <img id="logo-institucional" src="/static/images/logoUfpi.png" alt="Logo institucional UFPI 2" class="inst-logo">
+            <img id="logo-institucional" src="/static/images/logoUfpi.png" alt="Logo institucional UFPI 3"
+                class="inst-logo">
             <div>
                 <h1 class="h3 mb-0">Gerência de Contratos - GECON</h1>
                 <p class="mb-0 opacity-75">Sistema de Consulta de Portarias de Fiscalização</p>
