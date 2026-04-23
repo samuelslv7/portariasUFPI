@@ -80,10 +80,17 @@
             margin-right: 20px;
         }
 
-        footer {
+        .conteudo {
+            min-height: calc(100vh - 40px);
+            /* Leva em consideração a altura do cabeçalho e do rodapé */
+            overflow: auto;
+            /* Permite a rolagem do conteúdo caso exceda o tamanho da tela */
+        }
+
+        .rodape {
             width: 100%;
             height: 100px;
-            position: relative;
+            position: sticky;
             right: 0;
             bottom: 0;
             left: 0;
@@ -107,7 +114,7 @@
         </div>
     </header>
 
-    <main class="container">
+    <main class="container conteudo">
         <div class="search-container">
             <h4 class="mb-4 text-primary">Consulta por Servidor</h4>
             <form action="/" method="POST" class="row g-3">
@@ -165,7 +172,7 @@
     </main>
 
     <footer>
-        <div class="container text-center">
+        <div class="text-center rodape">
             <p> PÁGINA NÃO OFICIAL - DESENVOLVIDA EM ATIVIDADE DE ESTÁGIO<br>
                 Universidade Federal do Piauí - UFPI<br>
                 Gerência de Contratos - GECON<br>
