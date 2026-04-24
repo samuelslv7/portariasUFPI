@@ -3,7 +3,6 @@ import pandas as pd
 import os
 
 def migrar_excel_para_sqlite(caminho_excel, caminho_db):
-    # --- Remover o banco de dados antigo antes de começar ---
     if os.path.exists(caminho_db):
         os.remove(caminho_db)
         print(f"Banco de dados antigo removido para evitar duplicados.")

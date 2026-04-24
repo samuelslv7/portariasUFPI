@@ -45,11 +45,5 @@ def index():
                     else:
                         row['pdf_disponivel'] = False
                         row['link_pdf'] = None
-                        
-                    #row["pdf_disponivel"] = True if row["link_drive"] else False
 
     return render_template("index.html", resultados=resultados, siape=siape_buscado)
-
-
-if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=5000)
