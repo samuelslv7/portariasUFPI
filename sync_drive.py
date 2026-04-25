@@ -1,8 +1,8 @@
 import sqlite3
-from drive_service import obter_servico_drive
+from drive_service import obter_servico_drive, obter_servico_drive2
 
 def sincronizar_links_drive():
-    service = obter_servico_drive()
+    service = obter_servico_drive2()
 
     ID_PASTA_RAIZ = "1bMndtRFMbucRqEqjJK3Hl3LRT9N-DAcc"
     
@@ -41,4 +41,5 @@ def sincronizar_links_drive():
     print("Sincronização completa em todas as pastas de ano!")
 
 if __name__ == "__main__":
+    print("ENTRANDO")
     sincronizar_links_drive()

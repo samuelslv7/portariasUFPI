@@ -47,3 +47,6 @@ def index():
                         row['link_pdf'] = None
 
     return render_template("index.html", resultados=resultados, siape=siape_buscado)
+
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0", port=5000)

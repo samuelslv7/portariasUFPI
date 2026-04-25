@@ -6,7 +6,6 @@ from googleapiclient.discovery import build
 
 def obter_servico_drive():
     creds_raw = os.environ.get("GOOGLE_CREDENTIALS")
-
     if creds_raw:
         info = json.loads(creds_raw)
     else:
@@ -21,3 +20,25 @@ def obter_servico_drive():
     scopes = ["https://www.googleapis.com/auth/drive.readonly"]
     creds = service_account.Credentials.from_service_account_info(info, scopes=scopes)
     return build("drive", "v3", credentials=creds)
+
+
+def obter_servico_drive2():
+    scopes = ['https://www.googleapis.com/auth/drive.readonly']
+    
+    # 1. Tenta carregar das variáveis de ambiente (para a Vercel)
+    info = None
+    if 'GOOGLE_CREDENTIALS' in os.environ:
+        info = json.loads(os.environ.get('GOOGLE_CREDENTIALS'))
+    
+    # 2. Se não estiver no ambiente, tenta carregar o arquivo local (para o seu PC)
+    elif os.path.exists('credentials.json'):
+        with open('credentials.json', 'r') as f:
+            info = json.load(f)
+    
+    # 3. VERIFICAÇÃO CRÍTICA: Se 'info' ainda for None, o programa deve parar aqui
+    if info is None:
+        raise FileNotFoundError("Erro: As credenciais do Google não foram encontradas (JSON ou Variável de Ambiente).")
+
+    # Agora sim, a variável 'info' está garantida
+    creds = service_account.Credentials.from_service_account_info(info, scopes=scopes)
+    return build('drive', 'v3', credentials=creds)
